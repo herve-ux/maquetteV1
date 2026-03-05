@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Invexa – Mes Documents</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;1,500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#111827;--ink-2:#374151;--ink-3:#6B7280;
+  --border:#E5E7EB;--bg:#F9FAFB;--white:#FFFFFF;
+  --blue:#2563EB;--blue-pale:#EFF6FF;--blue-ring:rgba(37,99,235,.12);
+  --green:#16A34A;--green-pale:#F0FDF4;
+  --amber:#B45309;--amber-pale:#FFFBEB;
+  --red:#DC2626;--red-pale:#FFF1F1;
+  --violet:#7C3AED;--violet-pale:#F5F3FF;
+  --r:8px;
+}
+html,body{height:100%;font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);}
+body{display:flex;flex-direction:column;overflow:hidden;}
+
+/* ── TOP BAR ─────────────────────────── */
+.bar{
+  height:52px;background:var(--white);border-bottom:1px solid var(--border);
+  display:flex;align-items:center;padding:0 24px;gap:12px;flex-shrink:0;
+}
+.bar-logo{display:flex;align-items:center;gap:8px;}
+.bar-dot{width:8px;height:8px;border-radius:50%;background:var(--blue);}
+.bar-name{font-family:'Playfair Display',serif;font-size:17px;font-weight:600;color:var(--ink);letter-spacing:-.01em;}
+.bar-divider{width:1px;height:18px;background:var(--border);}
+.bar-dossier{font-size:12px;color:var(--ink-3);}
+.bar-dossier b{color:var(--ink-2);font-weight:600;}
+.bar-right{margin-left:auto;display:flex;align-items:center;gap:10px;}
+.bar-av{
+  width:30px;height:30px;border-radius:50%;
+  background:var(--blue-pale);border:1.5px solid #BFDBFE;
+  display:flex;align-items:center;justify-content:center;
+  font-size:10px;font-weight:700;color:var(--blue);
+}
+.bar-uname{font-size:12px;font-weight:600;color:var(--ink);}
+.bar-role{font-size:10px;color:var(--ink-3);}
+
+/* ── BODY LAYOUT ─────────────────────── */
+.body{display:flex;flex:1;overflow:hidden;}
+
+/* ── LEFT PANEL ──────────────────────── */
+.left{
+  width:220px;flex-shrink:0;background:var(--white);
+  border-right:1px solid var(--border);
+  display:flex;flex-direction:column;padding:20px 0;overflow-y:auto;
+}
+
+.lp-section{padding:0 16px 16px;border-bottom:1px solid var(--border);margin-bottom:16px;}
+.lp-label{font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--ink-3);margin-bottom:10px;}
+
+/* Conseiller mini-card */
+.cons-card{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.cons-av{
+  width:36px;height:36px;border-radius:var(--r);
+  background:var(--blue-pale);border:1px solid #BFDBFE;
+  display:flex;align-items:center;justify-content:center;
+  font-size:12px;font-weight:700;color:var(--blue);
+  flex-shrink:0;position:relative;
+}
+.cons-online{position:absolute;bottom:1px;right:1px;width:8px;height:8px;
+  border-radius:50%;background:var(--green);border:1.5px solid white;}
+.cons-name{font-size:12px;font-weight:600;color:var(--ink);}
+.cons-title{font-size:10px;color:var(--ink-3);margin-top:1px;}
+.cons-contact{display:flex;gap:5px;}
+.cons-btn{
+  flex:1;padding:6px 0;border-radius:6px;border:1px solid var(--border);
+  background:var(--bg);cursor:pointer;font-family:'Inter',sans-serif;
+  font-size:10px;font-weight:500;color:var(--ink-3);
+  display:flex;align-items:center;justify-content:center;gap:3px;
+  transition:.12s;
+}
+.cons-btn:hover{border-color:var(--blue);color:var(--blue);background:var(--blue-pale);}
+
+/* Progress */
+.prog{padding:0 16px 16px;border-bottom:1px solid var(--border);margin-bottom:16px;}
+.prog-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px;}
+.prog-title{font-size:10px;font-weight:600;color:var(--ink-2);}
+.prog-pct{font-size:14px;font-weight:700;color:var(--blue);}
+.prog-bar{height:5px;background:var(--border);border-radius:3px;overflow:hidden;margin-bottom:5px;}
+.prog-fill{height:100%;border-radius:3px;background:var(--blue);}
+.prog-sub{font-size:10px;color:var(--ink-3);}
+
+/* Nav */
+.nav-lbl{font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--ink-3);padding:0 16px 6px;}
+.nav-item{
+  display:flex;align-items:center;gap:8px;
+  padding:8px 16px;cursor:pointer;
+  font-size:12px;color:var(--ink-3);font-weight:500;
+  border-left:2px solid transparent;transition:.1s;
+}
+.nav-item:hover{background:var(--bg);color:var(--ink-2);}
+.nav-item.on{border-left-color:var(--blue);background:var(--blue-pale);color:var(--blue);font-weight:600;}
+.nav-ic{font-size:14px;}
+.nav-pill{
+  margin-left:auto;font-size:9px;font-weight:700;
+  padding:2px 6px;border-radius:8px;
+}
+.np-ok{background:var(--green-pale);color:var(--green);}
+.np-warn{background:var(--amber-pale);color:var(--amber);}
+.np-miss{background:var(--red-pale);color:var(--red);}
+.np-grey{background:var(--bg);color:var(--ink-3);}
+
+/* ── MAIN ─────────────────────────────── */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
+
+/* Toolbar */
+.toolbar{
+  height:46px;background:var(--white);border-bottom:1px solid var(--border);
+  display:flex;align-items:center;padding:0 20px;gap:8px;flex-shrink:0;
+}
+.tb-search{
+  display:flex;align-items:center;gap:6px;
+  padding:5px 10px;border-radius:6px;
+  border:1px solid var(--border);background:var(--bg);
+  font-family:'Inter',sans-serif;font-size:12px;color:var(--ink);width:180px;
+  transition:.15s;
+}
+.tb-search:focus{outline:none;border-color:var(--blue);background:var(--white);width:220px;}
+.tb-search::placeholder{color:var(--ink-3);}
+.tb-spacer{flex:1;}
+.tb-add{
+  padding:7px 14px;border-radius:6px;
+  background:var(--blue);color:white;border:none;
+  font-family:'Inter',sans-serif;font-size:11px;font-weight:600;
+  cursor:pointer;display:flex;align-items:center;gap:5px;
+  transition:.12s;
+}
+.tb-add:hover{background:#1D4ED8;}
+
+/* Tree body */
+.tree-body{flex:1;overflow-y:auto;padding:16px 20px;}
+.tree{display:flex;flex-direction:column;gap:8px;}
+
+/* ── FOLDER ───────────────────────────── */
+.folder{
+  background:var(--white);border:1px solid var(--border);
+  border-radius:10px;overflow:hidden;
+}
+.folder-hd{
+  display:flex;align-items:center;gap:9px;
+  padding:11px 14px;cursor:pointer;
+  transition:background .1s;user-select:none;
+}
+.folder-hd:hover{background:var(--bg);}
+.fhd-arr{font-size:9px;color:var(--ink-3);transition:transform .2s;flex-shrink:0;}
+.folder.open .fhd-arr{transform:rotate(90deg);}
+.fhd-icon{font-size:17px;}
+.fhd-name{font-size:13px;font-weight:600;color:var(--ink);}
+.fhd-sub{font-size:10px;color:var(--ink-3);margin-top:1px;}
+.fhd-right{margin-left:auto;display:flex;align-items:center;gap:8px;}
+.fhd-tag{
+  font-size:9px;font-weight:600;padding:2px 7px;border-radius:6px;
+  border:1px solid;
+}
+.fhd-tag-ok{background:var(--green-pale);color:var(--green);border-color:#BBF7D0;}
+.fhd-tag-warn{background:var(--amber-pale);color:var(--amber);border-color:#FDE68A;}
+.fhd-tag-miss{background:var(--red-pale);color:var(--red);border-color:#FECACA;}
+.fhd-dot{width:7px;height:7px;border-radius:50%;}
+
+.folder-bd{display:none;border-top:1px solid var(--border);}
+.folder.open .folder-bd{display:block;}
+
+/* ── FILE ROW ─────────────────────────── */
+.file{
+  display:flex;align-items:center;gap:10px;
+  padding:9px 14px 9px 36px;
+  border-bottom:1px solid var(--border);
+  cursor:pointer;transition:background .08s;
+  position:relative;
+}
+.file:last-child{border-bottom:none;}
+.file:hover{background:var(--bg);}
+.file:hover .fa{opacity:1;}
+.file.sel{background:var(--blue-pale);}
+
+/* file missing */
+.file.missing{background:var(--red-pale);}
+.file.missing:hover{background:#FEE2E2;}
+
+.file-ic{
+  width:28px;height:33px;border-radius:5px;
+  background:var(--bg);border:1px solid var(--border);
+  display:flex;align-items:center;justify-content:center;
+  font-size:13px;flex-shrink:0;
+}
+.file-ic.warn{background:var(--amber-pale);border-color:#FDE68A;}
+.file-ic.miss{background:#FEE2E2;border-color:#FECACA;}
+
+.fi{flex:1;min-width:0;}
+.fi-name{font-size:12px;font-weight:500;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.fi-name.warn{color:var(--amber);}
+.fi-name.miss{color:var(--red);}
+.fi-meta{display:flex;align-items:center;gap:6px;margin-top:2px;}
+.fm-type{font-size:10px;color:var(--ink-3);}
+.fm-size{font-size:10px;color:var(--ink-3);font-family:monospace;}
+.fm-ai{font-size:9px;font-weight:600;padding:1px 5px;border-radius:4px;}
+.ai-hi{background:#DCFCE7;color:var(--green);}
+.ai-md{background:var(--amber-pale);color:var(--amber);}
+.ai-lo{background:var(--red-pale);color:var(--red);}
+
+.fstatus{font-size:10px;font-weight:600;padding:3px 8px;border-radius:6px;flex-shrink:0;}
+.st-validated{background:var(--violet-pale);color:var(--violet);}
+.st-ok{background:var(--green-pale);color:var(--green);}
+.st-warn{background:var(--amber-pale);color:var(--amber);}
+.st-miss{background:var(--red-pale);color:var(--red);}
+.st-pend{background:var(--blue-pale);color:var(--blue);}
+
+/* Hover actions */
+.fa{display:flex;gap:3px;opacity:0;transition:opacity .12s;}
+.fab{
+  width:24px;height:24px;border-radius:5px;
+  border:1px solid var(--border);background:var(--white);
+  display:flex;align-items:center;justify-content:center;
+  font-size:10px;cursor:pointer;transition:.1s;
+}
+.fab:hover{border-color:var(--blue);background:var(--blue-pale);}
+.fab.r:hover{border-color:var(--red);background:var(--red-pale);}
+
+/* Missing row action button */
+.fab-dep{
+  font-size:10px;font-weight:600;padding:3px 8px;border-radius:5px;
+  background:var(--red);color:white;border:none;cursor:pointer;
+  font-family:'Inter',sans-serif;transition:.12s;opacity:1;
+}
+.fab-dep:hover{background:#B91C1C;}
+
+/* Sub-label inside folder */
+.sub-lbl{
+  padding:7px 14px 7px 36px;
+  font-size:10px;font-weight:600;color:var(--ink-3);
+  background:var(--bg);border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:5px;
+}
+
+/* Drop zone inside folder */
+.fdrop{
+  margin:8px 14px;padding:10px 14px;
+  border:1.5px dashed var(--border);border-radius:var(--r);
+  display:flex;align-items:center;gap:8px;
+  font-size:11px;color:var(--ink-3);cursor:pointer;
+  transition:.15s;
+}
+.fdrop:hover{border-color:var(--blue);color:var(--blue);background:var(--blue-pale);}
+
+/* ── DETAIL PANEL ─────────────────────── */
+.detail{
+  width:240px;flex-shrink:0;background:var(--white);
+  border-left:1px solid var(--border);
+  display:flex;flex-direction:column;overflow-y:auto;
+}
+.dp-head{
+  padding:14px 16px;border-bottom:1px solid var(--border);
+  font-size:10px;font-weight:600;color:var(--ink-3);
+  text-transform:uppercase;letter-spacing:.08em;
+}
+.dp-empty{
+  flex:1;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  padding:24px;text-align:center;color:var(--ink-3);
+}
+.dp-empty-ic{font-size:32px;margin-bottom:10px;opacity:.3;}
+.dp-empty-txt{font-size:11px;line-height:1.5;}
+
+#dpBody{display:none;flex-direction:column;}
+
+.dp-preview{
+  padding:16px;border-bottom:1px solid var(--border);
+  text-align:center;
+}
+.dp-file-ic{
+  width:52px;height:60px;border-radius:8px;
+  background:var(--bg);border:1px solid var(--border);
+  margin:0 auto 8px;display:flex;align-items:center;justify-content:center;font-size:22px;
+  position:relative;
+}
+.dp-ext{
+  position:absolute;bottom:-1px;left:50%;transform:translateX(-50%);
+  font-size:7px;font-weight:700;color:white;padding:1px 4px;border-radius:2px;
+}
+.dp-fname{font-size:12px;font-weight:600;color:var(--ink);margin-bottom:3px;}
+.dp-ftype{font-size:10px;color:var(--ink-3);}
+
+.dp-block{padding:12px 16px;border-bottom:1px solid var(--border);}
+.dp-blk-lbl{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-3);margin-bottom:8px;}
+.dp-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}
+.dp-row:last-child{margin-bottom:0;}
+.dp-k{font-size:10px;color:var(--ink-3);}
+.dp-v{font-size:10px;font-weight:600;color:var(--ink);}
+
+.dp-conf-row{display:flex;align-items:center;gap:6px;margin-top:6px;}
+.dp-conf-bar{flex:1;height:4px;background:var(--border);border-radius:2px;overflow:hidden;}
+.dp-conf-fill{height:100%;border-radius:2px;}
+.dp-conf-pct{font-size:11px;font-weight:700;}
+
+.dp-actions{padding:12px 16px;}
+.dpa{
+  width:100%;padding:8px;border-radius:6px;
+  font-family:'Inter',sans-serif;font-size:11px;font-weight:500;
+  border:1px solid var(--border);background:var(--bg);color:var(--ink-2);
+  cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px;
+  transition:.12s;margin-bottom:5px;
+}
+.dpa:last-child{margin-bottom:0;}
+.dpa:hover{border-color:var(--blue);color:var(--blue);background:var(--blue-pale);}
+.dpa.d:hover{border-color:var(--red);color:var(--red);background:var(--red-pale);}
+.dpa.locked{color:var(--ink-3);cursor:not-allowed;opacity:.6;}
+
+/* ── STATUS BAR ───────────────────────── */
+.sbar{
+  height:36px;background:var(--white);border-top:1px solid var(--border);
+  display:flex;align-items:center;padding:0 20px;gap:14px;flex-shrink:0;
+}
+.sb-item{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--ink-3);}
+.sb-dot{width:6px;height:6px;border-radius:50%;}
+.sb-num{font-weight:600;color:var(--ink-2);}
+.sb-sep{width:1px;height:14px;background:var(--border);}
+.sb-r{margin-left:auto;font-size:10px;color:var(--ink-3);}
+
+/* ── FOOTER ───────────────────────────── */
+.footer{
+  background:var(--white);border-top:1px solid var(--border);
+  padding:10px 20px;display:flex;gap:10px;flex-shrink:0;
+}
+.fc{
+  flex:1;display:flex;align-items:center;gap:10px;
+  padding:10px 12px;border-radius:var(--r);
+  border:1px solid var(--border);background:var(--bg);
+  cursor:pointer;transition:.12s;
+}
+.fc:hover{border-color:#BFDBFE;background:var(--blue-pale);}
+.fc-ic{width:32px;height:32px;border-radius:var(--r);display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;}
+.fc-t{font-size:11px;font-weight:600;color:var(--ink);margin-bottom:1px;}
+.fc-d{font-size:10px;color:var(--ink-3);line-height:1.3;}
+
+/* ── TOAST ─────────────────────────────── */
+.tw{position:fixed;bottom:14px;right:14px;display:flex;flex-direction:column;gap:6px;z-index:999;pointer-events:none;}
+.toast{
+  padding:9px 13px;border-radius:var(--r);font-size:11px;font-weight:500;
+  color:white;box-shadow:0 4px 16px rgba(0,0,0,.12);
+  animation:ti .25s ease;pointer-events:all;min-width:200px;
+  display:flex;align-items:center;gap:7px;
+}
+@keyframes ti{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.tout{animation:to .25s ease forwards;}
+@keyframes to{to{opacity:0;transform:translateY(8px)}}
+.tg{background:var(--green);}
+.tb{background:var(--blue);}
+.ta{background:var(--amber);}
+.tr{background:var(--red);}
+
+::-webkit-scrollbar{width:3px;height:3px;}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
+
+.stat-filter{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:6px 8px;border-radius:6px;cursor:pointer;
+  font-size:11px;color:var(--ink-3);font-weight:500;
+  border:1px solid transparent;transition:all .12s;
+  user-select:none;
+}
+.stat-filter:hover{background:var(--fb,#EFF6FF);color:var(--ink-2);}
+.stat-filter.active{border-color:currentColor;}
+.stat-num{font-size:12px;font-weight:700;}
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="bar">
+  <div class="bar-logo">
+    <div class="bar-dot"></div>
+    <div class="bar-name">Invexa</div>
+  </div>
+  <div class="bar-divider"></div>
+  <div class="bar-dossier">Dossier <b>#2025-042</b> — Paul &amp; Martine Durand</div>
+  <div class="bar-right">
+    <div style="text-align:right">
+      <div class="bar-uname">Paul Durand</div>
+      <div class="bar-role">Client</div>
+    </div>
+    <div class="bar-av">PD</div>
+  </div>
+</div>
+
+<!-- BODY -->
+<div class="body">
+
+  <!-- LEFT -->
+  <div class="left">
+
+    <div class="lp-section">
+      <div class="lp-label">Votre conseillère</div>
+      <div class="cons-card">
+        <div class="cons-av">SM<div class="cons-online"></div></div>
+        <div>
+          <div class="cons-name">Sophie Marchand</div>
+          <div class="cons-title">Conseillère · En ligne</div>
+        </div>
+      </div>
+      <div class="cons-contact">
+        <button class="cons-btn" onclick="t('✉️ Email ouvert dans votre messagerie','tb')">✉️ Email</button>
+        <button class="cons-btn" onclick="t('📞 Demande de rappel envoyée','tg')">📞 Rappel</button>
+      </div>
+    </div>
+
+    <div class="prog">
+      <div class="prog-top" style="margin-bottom:10px;">
+        <div class="prog-title">Fichiers déposés</div>
+        <div style="display:flex;align-items:center;gap:6px;">
+          <div class="prog-pct">8</div>
+          <span id="filter-reset" onclick="filterStatus(null)" style="display:none;font-size:9px;font-weight:600;color:var(--blue);cursor:pointer;padding:1px 6px;border-radius:4px;background:var(--blue-pale);border:1px solid #BFDBFE;">✕ Tout voir</span>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:4px;">
+        <div class="stat-filter" data-filter="Validé" onclick="filterStatus('Validé')" style="--fc:var(--violet);--fb:var(--violet-pale);">
+          <div style="display:flex;align-items:center;gap:6px;"><div style="width:7px;height:7px;border-radius:50%;background:var(--violet);flex-shrink:0;"></div><span>Validé</span></div>
+          <span class="stat-num" style="color:var(--violet);">1</span>
+        </div>
+        <div class="stat-filter" data-filter="Conforme" onclick="filterStatus('Conforme')" style="--fc:var(--green);--fb:var(--green-pale);">
+          <div style="display:flex;align-items:center;gap:6px;"><div style="width:7px;height:7px;border-radius:50%;background:var(--green);flex-shrink:0;"></div><span>Conforme</span></div>
+          <span class="stat-num" style="color:var(--green);">5</span>
+        </div>
+        <div class="stat-filter" data-filter="À corriger" onclick="filterStatus('À corriger')" style="--fc:var(--amber);--fb:var(--amber-pale);">
+          <div style="display:flex;align-items:center;gap:6px;"><div style="width:7px;height:7px;border-radius:50%;background:var(--amber);flex-shrink:0;"></div><span>À remplacer</span></div>
+          <span class="stat-num" style="color:var(--amber);">1</span>
+        </div>
+        <div class="stat-filter" data-filter="Manquant" onclick="filterStatus('Manquant')" style="--fc:var(--red);--fb:var(--red-pale);">
+          <div style="display:flex;align-items:center;gap:6px;"><div style="width:7px;height:7px;border-radius:50%;background:var(--red);flex-shrink:0;"></div><span>Manquant</span></div>
+          <span class="stat-num" style="color:var(--red);">5</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="nav-lbl">Dossiers</div>
+    <div class="nav-item on" onclick="nav(this)"><span class="nav-ic">🗂</span>Tous<span class="nav-pill np-warn">8 / 13</span></div>
+    <div class="nav-item" onclick="nav(this)"><span class="nav-ic">🪪</span>Identité<span class="nav-pill np-ok">3 / 3</span></div>
+    <div class="nav-item" onclick="nav(this)"><span class="nav-ic">💰</span>Revenus<span class="nav-pill np-warn">2 / 4</span></div>
+    <div class="nav-item" onclick="nav(this)"><span class="nav-ic">🏦</span>Bancaire<span class="nav-pill np-warn">2 / 3</span></div>
+    <div class="nav-item" onclick="nav(this)"><span class="nav-ic">🏠</span>Immobilier<span class="nav-pill np-ok">1 / 1</span></div>
+    <div class="nav-item" onclick="nav(this)"><span class="nav-ic">📋</span>Patrimoine<span class="nav-pill np-miss">0 / 2</span></div>
+
+  </div>
+
+  <!-- MAIN -->
+  <div class="main">
+
+    <!-- Toolbar -->
+    <div class="toolbar">
+      <input class="tb-search" type="text" placeholder="Rechercher…" oninput="search(this.value)">
+      <div class="tb-spacer"></div>
+      <button class="tb-add" onclick="t('📂 Zone de dépôt ouverte','tb')">+ Ajouter des fichiers</button>
+    </div>
+
+    <!-- Tree -->
+    <div class="tree-body">
+      <div class="tree" id="tree">
+
+        <!-- PIÈCES D'IDENTITÉ -->
+        <div class="folder open" id="f-id">
+          <div class="folder-hd" onclick="tog('f-id')">
+            <span class="fhd-arr">▶</span>
+            <span class="fhd-icon">🪪</span>
+            <div>
+              <div class="fhd-name">Pièces d'identité</div>
+              <div class="fhd-sub">3 documents · Complet</div>
+            </div>
+            <div class="fhd-right">
+              <span class="fhd-tag fhd-tag-ok">3 / 3</span>
+              <div class="fhd-dot" style="background:var(--green)"></div>
+            </div>
+          </div>
+          <div class="folder-bd">
+
+            <div class="sub-lbl">👤 Paul Durand — emprunteur</div>
+
+            <div class="file" onclick="sel(this,'Passeport_France_Paul.pdf','pdf','Passeport France','2.3 Mo','97','Validé','Paul Durand · N° 12AB34567 · Exp. 2031')">
+              <div class="file-ic">📄</div>
+              <div class="fi">
+                <div class="fi-name">Passeport_France_Paul.pdf</div>
+                <div class="fi-meta">
+                  <span class="fm-type">Passeport France</span>
+                  <span class="fm-size">2.3 Mo</span>
+                  <span class="fm-ai ai-hi">IA 97%</span>
+                </div>
+              </div>
+              <span class="fstatus st-validated">Validé</span>
+              <div class="fa">
+                <div class="fab" onclick="ev();t('👁 Aperçu','tb')">👁</div>
+                <div class="fab" onclick="ev();t('⬇️ Téléchargement','tg')">⬇</div>
+              </div>
+            </div>
+
+            <div class="file" onclick="sel(this,'IMG_4721.jpg','jpg','Passeport USA','1.8 Mo','91','Conforme','Paul Durand · N° A12345678 · Exp. 2029')">
+              <div class="file-ic">🖼</div>
+              <div class="fi">
+                <div class="fi-name">IMG_4721.jpg</div>
+                <div class="fi-meta">
+                  <span class="fm-type">Passeport USA</span>
+                  <span class="fm-size">1.8 Mo</span>
+                  <span class="fm-ai ai-hi">IA 91%</span>
+                </div>
+              </div>
+              <span class="fstatus st-ok">Conforme</span>
+              <div class="fa">
+                <div class="fab" onclick="ev();t('👁 Aperçu','tb')">👁</div>
+                <div class="fab" onclick="ev();t('⬇️ Téléchargement','tg')">⬇</div>
+                <div class="fab r" onclick="ev();t('🗑 Supprimé','tr')">✕</div>
+              </div>
+            </div>
+
+            <div class="sub-lbl">👤 Martine Durand — co-emprunteur</div>
+
+            <div class="file" onclick="sel(this,'scan_passeport_martine.pdf','pdf','Passeport France','1.4 Mo','95','Conforme','Martine Durand · N° 98ZX21003 · Exp. 2030')">
+              <div class="file-ic">📄</div>
+              <div class="fi">
+                <div class="fi-name">scan_passeport_martine.pdf</div>
+                <div class="fi-meta">
+                  <span class="fm-type">Passeport France</span>
+                  <span class="fm-size">1.4 Mo</span>
+                  <span class="fm-ai ai-hi">IA 95%</span>
+                </div>
+              </div>
+              <span class="fstatus st-ok">Conforme</span>
+              <div class="fa">
+                <div class="fab" onclick="ev();t('👁 Aperçu','tb')">👁</div>
+                <div class="fab" onclick="ev();t('⬇️ Téléchargement','tg')">⬇</div>
+                <div class="fab r" onclick="ev();t('🗑 Supprimé','tr')">✕</div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- REVENUS -->
+        <div class="folder open" id="f-rev">
+          <div class="folder-hd" onclick="tog('f-rev')">
+            <span class="fhd-arr">▶</span>
+            <span class="fhd-icon">💰</span>
+            <div>
+              <div class="fhd-name">Revenus & Bulletins de salaire</div>
+              <div class="fhd-sub">2 présents · 2 manquants</div>
+            </div>
+            <div class="fhd-right">
+              <span class="fhd-tag fhd-tag-warn">2 / 4</span>
+              <div class="fhd-dot" style="background:var(--amber)"></div>
+            </div>
+          </div>
+          <div class="folder-bd">
+
+            <div class="sub-lbl">👤 Paul Durand — 3 derniers mois requis</div>
+
+            <div class="file" onclick="sel(this,'Bulletin_Mars2025.pdf','pdf','Bulletin de salaire','0.9 Mo','88','Conforme','Paul Durand · Salaire net 3 420 € · Mars 2025')">
+              <div class="file-ic">📄</div>
+              <div class="fi">
+                <div class="fi-name">Bulletin_Mars2025.pdf</div>
+                <div class="fi-meta">
+                  <span class="fm-type">Bulletin – Mars 2025</span>
+                  <span class="fm-size">0.9 Mo</span>
+                  <span class="fm-ai ai-hi">IA 88%</span>
+                </div>
+              </div>
+              <span class="fstatus st-ok">Conforme</span>
+              <div class="fa">
+                <div class="fab" onclick="ev();t('👁 Aperçu','tb')">👁</div>
+                <div class="fab r" onclick="ev();t('🗑 Supprimé','tr')">✕</div>
+              </div>
+            </div>
+
+            <div class="file" onclick="sel(this,'Bulletin_Avril2025.pdf','pdf','Bulletin de salaire','0.9 Mo','72','À corriger','Paul Durand · Lisibilité insuffisante · Avril 2025')">
+              <div class="file-ic warn">📄</div>
+              <div class="fi">
+                <div class="fi-name warn">Bulletin_Avril2025.pdf</div>
+                <div class="fi-meta">
+                  <span class="fm-type">Bulletin – Avril 2025</span>
+                  <span class="fm-size">0.9 Mo</span>
+                  <span class="fm-ai ai-md">IA 72%</span>
+                </div>
+              </div>
+              <span class="fstatus st-warn">À corriger</span>
+              <div class="fa">
+                <div class="fab" style="font-size:9px;width:auto;padding:0 6px;" onclick="ev();t('📤 Remplacer ce fichier','ta')">↑ Remplacer</div>
+              </div>
+            </div>
+
+            <div class="file missing" data-status="Manquant" onclick="t('📤 Déposer le bulletin de Février 2025','ta')">
+              <div class="file-ic miss">📄</div>
+              <div class="fi">
+                <div class="fi-name miss">Bulletin Février 2025 — manquant</div>
+                <div class="fi-meta"><span class="fm-type" style="color:var(--red)">Demandé par Sophie M.</span></div>
+              </div>
+              <span class="fstatus st-miss">Manquant</span>
+              <button class="fab-dep" onclick="ev();t('📤 Déposer bulletin Fév. 2025','tb')">+ Déposer</button>
+            </div>
+
+            <div class="file missing" data-status="Manquant" onclick="t('📤 Déposer le bulletin de Janvier 2025','ta')">
+              <div class="file-ic miss">📄</div>
+              <div class="fi">
+                <div class="fi-name miss">Bulletin Janvier 2025 — manquant</div>
+                <div class="fi-meta"><span class="fm-type" style="color:var(--red)">Demandé par Sophie M.</span></div>
+              </div>
+              <span class="fstatus st-miss">Manquant</span>
+              <button class="fab-dep" onclick="ev();t('📤 Déposer bulletin Jan. 2025','tb')">+ Déposer</button>
+            </div>
+
+            <div class="fdrop" onclick="t('📂 Ajouter un document dans Revenus','tb')">
+              ＋ Glisser un bulletin ici
+            </div>
+
+          </div>
+        </div>
+
+        <!-- RELEVÉS BANCAIRES -->
+        <div class="folder open" id="f-bank">
+          <div class="folder-hd" onclick="tog('f-bank')">
+            <span class="fhd-arr">▶</span>
+            <span class="fhd-icon">🏦</span>
+            <div>
+              <div class="fhd-name">Relevés bancaires</div>
+              <div class="fhd-sub">2 présents · 1 manquant</div>
+            </div>
+            <div class="fhd-right">
+              <span class="fhd-tag fhd-tag-warn">2 / 3</span>
+              <div class="fhd-dot" style="background:var(--amber)"></div>
+            </div>
+          </div>
+          <div class="folder-bd">
+
+            <div class="sub-lbl">🏦 CIC — Compte joint</div>
+
+            <div class="file" onclick="sel(this,'Releve_CIC_Avril.pdf','pdf','Relevé bancaire','1.1 Mo','96','Conforme','CIC · Compte joint · FR76 1234 · Avril 2025')">
+              <div class="file-ic">🏦</div>
+              <div class="fi">
+                <div class="fi-name">Releve_CIC_Avril.pdf</div>
+                <div class="fi-meta">
+                  <span class="fm-type">Relevé – Avril 2025</span>
+                  <span class="fm-size">1.1 Mo</span>
+                  <span class="fm-ai ai-hi">IA 96%</span>
+                </div>
+              </div>
+              <span class="fstatus st-ok">Conforme</span>
+              <div class="fa">
+                <div class="fab" onclick="ev();t('👁 Aperçu','tb')">👁</div>
+                <div class="fab r" onclick="ev();t('🗑 Supprimé','tr')">✕</div>
+              </div>
+            </div>
+
+            <div class="file" onclick="sel(this,'Releve_CIC_Mars.pdf','pdf','Relevé bancaire','1.0 Mo','94','Conforme','CIC · Compte joint · FR76 1234 · Mars 2025')">
+              <div class="file-ic">🏦</div>
+              <div class="fi">
+                <div class="fi-name">Releve_CIC_Mars.pdf</div>
+                <div class="fi-meta">
+                  <span class="fm-type">Relevé – Mars 2025</span>
+                  <span class="fm-size">1.0 Mo</span>
+                  <span class="fm-ai ai-hi">IA 94%</span>
+                </div>
+              </div>
+              <span class="fstatus st-ok">Conforme</span>
+              <div class="fa">
+                <div class="fab" onclick="ev();t('👁 Aperçu','tb')">👁</div>
+                <div class="fab r" onclick="ev();t('🗑 Supprimé','tr')">✕</div>
+              </div>
+            </div>
+
+            <div class="file missing" data-status="Manquant" onclick="t('📤 Déposer le relevé de Février 2025','ta')">
+              <div class="file-ic miss">🏦</div>
+              <div class="fi">
+                <div class="fi-name miss">Relevé Février 2025 — manquant</div>
+                <div class="fi-meta"><span class="fm-type" style="color:var(--red)">Demandé par Sophie M.</span></div>
+              </div>
+              <span class="fstatus st-miss">Manquant</span>
+              <button class="fab-dep" onclick="ev();t('📤 Déposer relevé Fév. 2025','tb')">+ Déposer</button>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- BIEN IMMOBILIER -->
+        <div class="folder open" id="f-immo">
+          <div class="folder-hd" onclick="tog('f-immo')">
+            <span class="fhd-arr">▶</span>
+            <span class="fhd-icon">🏠</span>
+            <div>
+              <div class="fhd-name">Bien immobilier</div>
+              <div class="fhd-sub">1 document · Complet</div>
+            </div>
+            <div class="fhd-right">
+              <span class="fhd-tag fhd-tag-ok">1 / 1</span>
+              <div class="fhd-dot" style="background:var(--green)"></div>
+            </div>
+          </div>
+          <div class="folder-bd">
+            <div class="file" onclick="sel(this,'Compromis_vente.pdf','pdf','Compromis de vente','3.2 Mo','89','Conforme','15 rue des Lilas · 75012 Paris · 380 000 €')">
+              <div class="file-ic">🏠</div>
+              <div class="fi">
+                <div class="fi-name">Compromis_vente.pdf</div>
+                <div class="fi-meta">
+                  <span class="fm-type">Compromis signé</span>
+                  <span class="fm-size">3.2 Mo</span>
+                  <span class="fm-ai ai-hi">IA 89%</span>
+                </div>
+              </div>
+              <span class="fstatus st-ok">Conforme</span>
+              <div class="fa">
+                <div class="fab" onclick="ev();t('👁 Aperçu','tb')">👁</div>
+                <div class="fab" onclick="ev();t('⬇️ Téléchargement','tg')">⬇</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- PATRIMOINE -->
+        <div class="folder" id="f-pat">
+          <div class="folder-hd" onclick="tog('f-pat')">
+            <span class="fhd-arr">▶</span>
+            <span class="fhd-icon">📋</span>
+            <div>
+              <div class="fhd-name">Situation patrimoniale</div>
+              <div class="fhd-sub">Aucun document · 2 attendus</div>
+            </div>
+            <div class="fhd-right">
+              <span class="fhd-tag fhd-tag-miss">0 / 2</span>
+              <div class="fhd-dot" style="background:var(--red)"></div>
+            </div>
+          </div>
+          <div class="folder-bd">
+            <div style="padding:12px 14px 4px;font-size:11px;color:var(--ink-3);font-style:italic;">
+              📭 Avis d'imposition 2024 et Contrat de travail attendus
+            </div>
+            <div class="fdrop" onclick="t('📂 Ajouter un document dans Patrimoine','tb')">
+              ＋ Glisser vos documents ici
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Status bar -->
+    <div class="sbar">
+      <div class="sb-item"><div class="sb-dot" style="background:var(--violet)"></div>Validé : <span class="sb-num">1</span></div>
+      <div class="sb-sep"></div>
+      <div class="sb-item"><div class="sb-dot" style="background:var(--green)"></div>Conforme : <span class="sb-num">5</span></div>
+      <div class="sb-sep"></div>
+      <div class="sb-item"><div class="sb-dot" style="background:var(--amber)"></div>À corriger : <span class="sb-num">1</span></div>
+      <div class="sb-sep"></div>
+      <div class="sb-item"><div class="sb-dot" style="background:var(--red)"></div>Manquant : <span class="sb-num">5</span></div>
+      <div class="sb-r" id="sbr">Cliquez un fichier pour le détail</div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+      <div class="fc" onclick="t('🤖 Tri IA actif sur votre dossier','tb')">
+        <div class="fc-ic" style="background:#EFF6FF;">🤖</div>
+        <div>
+          <div class="fc-t">Tri intelligent</div>
+          <div class="fc-d">L'IA reconnaît vos documents et les place dans les bons dossiers automatiquement.</div>
+        </div>
+      </div>
+      <div class="fc" onclick="t('🔒 Chiffrement AES-256 actif','tg')">
+        <div class="fc-ic" style="background:var(--green-pale);">🔒</div>
+        <div>
+          <div class="fc-t">100% sécurisé</div>
+          <div class="fc-d">Vos documents sont chiffrés et accessibles uniquement par votre conseiller Invexa.</div>
+        </div>
+      </div>
+      <div class="fc" onclick="t('✏️ Cliquez sur ⤷ pour déplacer un fichier','tb')">
+        <div class="fc-ic" style="background:var(--amber-pale);">✏️</div>
+        <div>
+          <div class="fc-t">Corrigeable</div>
+          <div class="fc-d">Si un document est mal classé, vous pouvez le déplacer facilement avant validation.</div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /main -->
+
+  <!-- DETAIL PANEL -->
+  <div class="detail">
+    <div class="dp-head">Détails</div>
+    <div class="dp-empty" id="dpEmpty">
+      <div class="dp-empty-ic">📄</div>
+      <div class="dp-empty-txt">Cliquez sur un fichier pour voir ses informations et les données extraites par l'IA</div>
+    </div>
+    <div id="dpBody"></div>
+  </div>
+
+</div><!-- /body -->
+
+<div class="tw" id="tw"></div>
+
+<script>
+const STATUS_MAP = {
+  'Validé':    { cls:'st-validated', color:'var(--violet)' },
+  'Conforme':  { cls:'st-ok',        color:'var(--green)'  },
+  'À corriger':{ cls:'st-warn',      color:'var(--amber)'  },
+  'En cours':  { cls:'st-pend',      color:'var(--blue)'   },
+};
+const EXT_BG = { pdf:'#DC2626', jpg:'#0891B2', png:'#7C3AED' };
+
+function tog(id){ document.getElementById(id).classList.toggle('open'); }
+
+function nav(el){
+  document.querySelectorAll('.nav-item').forEach(i=>i.classList.remove('on'));
+  el.classList.add('on');
+}
+
+let curSel = null;
+function sel(row, name, ext, type, size, conf, status, ai){
+  if(curSel) curSel.classList.remove('sel');
+  row.classList.add('sel'); curSel = row;
+  document.getElementById('sbr').textContent = name;
+  renderDetail(name, ext, type, size, conf, status, ai);
+}
+
+function renderDetail(name, ext, type, size, conf, status, ai){
+  document.getElementById('dpEmpty').style.display = 'none';
+  const c = parseInt(conf);
+  const cc = c>=85?'var(--green)':c>=70?'var(--amber)':'var(--red)';
+  const sm = STATUS_MAP[status] || { cls:'st-pend', color:'var(--blue)' };
+  const locked = status === 'Validé';
+  const extBg = EXT_BG[ext] || '#64748B';
+
+  const b = document.getElementById('dpBody');
+  b.style.display = 'flex';
+  b.style.flexDirection = 'column';
+  b.innerHTML = `
+    <div class="dp-preview">
+      <div class="dp-file-ic">
+        ${ext==='pdf'?'📄':'🖼'}
+        <span class="dp-ext" style="background:${extBg}">${ext.toUpperCase()}</span>
+      </div>
+      <div class="dp-fname">${name}</div>
+      <div class="dp-ftype">${type}</div>
+    </div>
+
+    <div class="dp-block">
+      <div class="dp-blk-lbl">Informations</div>
+      <div class="dp-row">
+        <span class="dp-k">Statut</span>
+        <span class="fstatus ${sm.cls}" style="font-size:10px;padding:2px 7px;">${status}</span>
+      </div>
+      <div class="dp-row"><span class="dp-k">Taille</span><span class="dp-v">${size}</span></div>
+      <div class="dp-row"><span class="dp-k">Format</span><span class="dp-v">${ext.toUpperCase()}</span></div>
+      <div class="dp-row"><span class="dp-k">Déposé</span><span class="dp-v">12/05/2025</span></div>
+    </div>
+
+    <div class="dp-block">
+      <div class="dp-blk-lbl">Extraction IA</div>
+      <div class="dp-row"><span class="dp-k">Confiance</span><span class="dp-v" style="color:${cc};font-weight:700;">${conf}%</span></div>
+      <div class="dp-conf-row">
+        <div class="dp-conf-bar"><div class="dp-conf-fill" style="width:${conf}%;background:${cc}"></div></div>
+      </div>
+      <div style="font-size:10px;color:var(--ink-3);margin-top:6px;line-height:1.4;">${ai}</div>
+    </div>
+
+    <div class="dp-actions">
+      <button class="dpa" onclick="t('👁 Aperçu','tb')">👁 Aperçu / Télécharger</button>
+      ${!locked?`<button class="dpa" onclick="t('↑ Sélectionner un fichier de remplacement','ta')">↑ Remplacer</button>`:''}
+      <button class="dpa" onclick="t('⤷ Déplacer vers un autre dossier','tb')">⤷ Déplacer</button>
+      ${!locked
+        ? `<button class="dpa d" onclick="t('🗑 Fichier supprimé','tr')">✕ Supprimer</button>`
+        : `<button class="dpa locked" disabled>🔒 Document verrouillé</button>`}
+    </div>
+  `;
+}
+
+function search(q){
+  document.querySelectorAll('.file').forEach(r=>{
+    const n = r.querySelector('.fi-name');
+    if(!n) return;
+    r.style.display = !q||n.textContent.toLowerCase().includes(q.toLowerCase())?'':'none';
+  });
+}
+
+function ev(){ event.stopPropagation(); }
+
+function t(msg, cls='tb'){
+  const el = document.createElement('div');
+  el.className = `toast ${cls}`;
+  el.textContent = msg;
+  document.getElementById('tw').appendChild(el);
+  setTimeout(()=>{ el.classList.add('tout'); setTimeout(()=>el.remove(),250); }, 2800);
+}
+
+let activeFilter = null;
+
+function filterStatus(status){
+  // Toggle off if clicking same
+  if(activeFilter === status){ status = null; }
+  activeFilter = status;
+
+  // Update filter pill styling
+  document.querySelectorAll('.stat-filter').forEach(el=>{
+    el.classList.toggle('active', el.dataset.filter === status);
+  });
+
+  // Show/hide reset chip
+  document.getElementById('filter-reset').style.display = status ? 'inline-flex' : 'none';
+
+  // Filter file rows
+  document.querySelectorAll('.file').forEach(row=>{
+    if(!status){ row.style.display=''; return; }
+    const badge = row.querySelector('.fstatus');
+    const isMissingRow = row.classList.contains('missing');
+    let rowStatus = badge ? badge.textContent.trim() : '';
+    // Normalize
+    if(isMissingRow) rowStatus = 'Manquant';
+    const match = rowStatus === status ||
+      (status === 'À corriger' && rowStatus === 'À corriger') ||
+      (status === 'Manquant' && rowStatus === 'Manquant');
+    row.style.display = match ? '' : 'none';
+  });
+
+  // Open all folders so filtered rows are visible
+  if(status){
+    document.querySelectorAll('.folder').forEach(f=>f.classList.add('open'));
+  }
+
+  // Feedback
+  const labels = {'Validé':'🟣 Validé','Conforme':'🟢 Conforme','À corriger':'🟠 À remplacer','Manquant':'🔴 Manquant'};
+  if(status) t('Filtre : ' + (labels[status]||status),'tb');
+  else t('Filtre supprimé — tous les fichiers','tb');
+}
+</script>
+</body>
+</html>
